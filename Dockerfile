@@ -8,7 +8,7 @@ RUN apk update && \
 
 RUN mkdir /datac
 
-COPY * /datac
+COPY * /datac/
 
 CMD ["python3","/datac/mainscript.py"]
 
