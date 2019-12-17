@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 #Connect to the Database
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://prog:1234@localhost/datacollector'
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://prog:1234@192.168.100.78/datacollector'
 db = SQLAlchemy(app)
 
 class Data(db.Model):
@@ -44,4 +44,4 @@ def success():
 
 #Running and Controlling the script
 if (__name__ =="__main__"):
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
