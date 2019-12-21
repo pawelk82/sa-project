@@ -1,0 +1,32 @@
+pipeline {
+   agent { label 'centos_node'}
+    stages {
+       stage('Stop and remove running APP docker container') {
+        steps { 
+            echo "**********STOP and REMOVE RUNNING APP CONTAINER*************"
+            sh "docker stop \$(docker ps -a | awk '{print \$1}' | grep -v CONTAINER)"
+            sh "docker rm \$(docker ps -a | awk '{print \$1}' | grep -v CONTAINER)"
+         }
+      }
+       stage('Run APP in docker container') {
+        steps {
+            echo "****************RUN APP IN DOCKER CONTAINER WITH TAG $BuildNumber************************"
+            sh "docker run -d -p 5000:5000 pawelk82/sa-project:$BuildNumber"
+         }
+      }
+       stage('Check App') {
+        steps {
+              sh '''
+                    #!/bin/bash
+                    sleep 15s
+                    statuscode=$(curl -sLI -w '%{http_code}' http://localhost:5000 -o /dev/null)
+                    if [ $statuscode == "200" ]; then echo "*******OK!request was successful********"
+                    else
+                      echo "********error status : $statuscode********"
+                      exit 1
+                    fi
+                 '''
+            }        
+         }
+      }
+}
